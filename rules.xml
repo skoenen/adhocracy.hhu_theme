@@ -1,0 +1,80 @@
+<rules
+	xmlns="http://namespaces.plone.org/diazo"
+	xmlns:css="http://namespaces.plone.org/diazo/css"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+	<theme href="theme.html" />
+
+	<!--do not theme ajax requests-->
+	<xi:include href="rules_notheme.xml" />
+
+	<rules if-content="/html/body/div[@id='main']">
+		<!-- Head -->
+		<xsl:choose>
+			<xsl:when test="contains( $local_content, 'true' )">
+				<xi:include href="rules_header.xml"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xi:include href="../../../adhocracy.wordpressbasic_theme/adhocracy/wordpressbasic_theme/rules_header.xml"/>
+			</xsl:otherwise>
+		</xsl:choose>
+
+		<!--Fix wordpress links -->
+		<xsl:choose>
+			<xsl:when test="contains( $local_content, 'true' )">
+				<xi:include href="rules_fixlinks.xml"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xi:include href="../../../adhocracy.wordpressbasic_theme/adhocracy/wordpressbasic_theme/rules_fixlinks.xml"/>
+			</xsl:otherwise>
+		</xsl:choose>
+
+		<!--Body-->
+		<replace theme="/html/body" content="/html/body"/>
+
+		<!--Navigation-->
+		<xi:include href="rules_navigation.xml"/>
+
+		<!--Content body and sidebar: startpage with merged wordpress-->
+		<rules if-content="//div[@id='content-startpage']">
+			<xsl:choose>
+				<xsl:when test="contains( $local_content, 'true' )">
+					<xi:include href="rules_startpage.xml"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xi:include href="../../../adhocracy.wordpressbasic_theme/adhocracy/wordpressbasic_theme/rules_startpage.xml"/>
+				</xsl:otherwise>
+			</xsl:choose>
+
+			<!--Workaround to handle bad wordpress html-->
+			<after css:theme-children="div#mainbar-dummy" >
+				<p>
+					<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+				</p>
+			</after>
+		</rules>
+
+		<!--Content body and sidebar: aboutpage with merged wordpress-->
+		<rules if-path="/_pages/mehr-erfahren">
+			<replace content="//div[@id='main']/attribute::class" >
+				<xsl:attribute name="class">with_wordpress_tabs</xsl:attribute>
+			</replace>
+			<drop css:content="#col1" attributes="id"/>
+			<drop css:content="#col3"/>
+		</rules>
+
+		<!--Content body and sidebar: wordpress pages (/_pages)-->
+		<xsl:choose>
+			<xsl:when test="contains( $local_content, 'true' )">
+				<xi:include href="rules_pages.xml"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xi:include href="../../../adhocracy.wordpressbasic_theme/adhocracy/wordpressbasic_theme/rules_pages.xml"/>
+			</xsl:otherwise>
+		</xsl:choose>
+
+		<xi:include href="rules_wordpress_javascript.xml"/>
+
+	</rules>
+</rules>
