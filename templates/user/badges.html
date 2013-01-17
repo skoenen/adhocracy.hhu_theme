@@ -14,7 +14,7 @@
 
 <%block name="main_content">
 <h2>${_('Badges for %s') % c.page_user.user_name}</h2>
-<form name="settings" class="inplace" method="POST" 
+<form name="settings" class="inplace" method="POST"
       action="/user/${c.page_user.user_name}/badges">
 
     ${h.field_token()|n}
@@ -29,10 +29,10 @@
             %for badge in c.badges:
             <tr>
                 <td>
-                    <input type="checkbox" value="${badge.id}" 
+                    <input type="checkbox" value="${badge.id}"
                            name="badge" />
                 </td>
-                <td><b>${badge.title}</b> ${_('Example:')} ${badge_tiles.badge(badge)}</td>
+                <td> ${badge_tiles.badge(badge)} <span class="badge">${_("invisible") if not badge.visible else (_("clear") if badge.color == "" else badge.color)}</span></td>
             </tr>
             %endfor
         </tbody>
@@ -50,20 +50,20 @@
                 %for badge in instance["badges"]:
                 <tr>
                     <td>
-                        <input type="checkbox" value="${badge.id}" 
+                        <input type="checkbox" value="${badge.id}"
                                name="badge" />
                     </td>
-                    <td><b>${badge.title}</b> ${_('Example:')} ${badge_tiles.badge(badge)}</td>
+                    <td> ${badge_tiles.badge(badge)} <span class="badge">${_("invisible") if not badge.visible else (_("clear") if badge.color == "" else badge.color)}</span></td>
                 </tr>
                 %endfor
             </tbody>
-        </table>      
+        </table>
       %endif
     %endfor
 
     <div style="clear:both;"></div>
- 
+
     ${components.savebox("/user/%s" % c.page_user.user_name)}
-    
+
 </form>
 </%block>
